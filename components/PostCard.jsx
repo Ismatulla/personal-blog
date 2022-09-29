@@ -9,7 +9,7 @@ const PostCard = ({post}) => {
         <Link href={`/post/${post.slug}`}>{post.title}</Link>
       </h1>
       <div className="block  text-center items-center jusify-center  mb-8 w-full">
-        <div className="flex items-center justify-center mb-4 lg:mb-0 w-full lg:w-auto  mr-8 w-full">
+        <div className="flex items-center justify-center mb-4 lg:mb-0 lg:w-auto  mr-8 w-full">
           <img
             src={post.author.photo.url}
             alt={post.author.title}
