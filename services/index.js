@@ -1,5 +1,5 @@
 import { request, gql } from 'graphql-request'
-const graphqlAPI ='https://api-eu-central-1-shared-euc1-02.hygraph.com/v2/cl8jzea7a16hg01ueclaq1bum/master'
+const graphqlAPI = 'https://api-eu-central-1-shared-euc1-02.hygraph.com/v2/cl8jzea7a16hg01ueclaq1bum/master'
 
 export const getPosts = async () => {
   const query = gql`
@@ -113,6 +113,29 @@ export const getSimilarPosts = async (categories, slug) => {
   return result.posts
 }
 
+
+export const getSingleSimilarPosts = async (categories, slug) => {
+  const query = gql`
+    query GetPostDetails($slug: String!, $categories: [String!]){
+      posts(
+        where: {slug_not: $slug, AND: {categories_some: {slug_in: $categories}}}
+        first: 1
+      ) {
+        title
+        featuredImage{
+          url
+        }
+        createdAt
+        slug
+      }
+    }
+  `
+
+  const result = await request(graphqlAPI, query, { categories, slug })
+  return result.posts
+}
+
+
 export const getCategories = async () => {
   const query = gql`
  query getCategories{
@@ -128,15 +151,16 @@ categories{
 
 
 export const submitComment = async (obj) => {
-  const result = await fetch('../pages/api/comments', {
-    method: "POST",
+  const result = await fetch('/api/comments', {
+    method: 'POST',
     headers: {
-      'Content-Type': "application/json"
+      'Content-Type': 'application/json',
     },
-    body: JSON.stringify(obj)
-  })
-  return result.json()
-}
+    body: JSON.stringify(obj),
+  });
+
+  return result.json();
+};
 
 export const getCategoryPost = async (slug) => {
   const query = gql`
@@ -193,4 +217,20 @@ export const getFeaturedPosts = async () => {
   }`
   const result = await request(graphqlAPI, query)
   return result.posts
+}
+
+
+export const getComments = async (slug) => {
+  const query = gql`
+    query GetComments($slug: String!) {
+      comments(where: {post: {slug: $slug}}) {
+        name
+        createdAt
+        comment
+      }
+    }
+  `
+
+  const result = await request(graphqlAPI, query, { slug })
+  return result.comments
 }
